@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o pipefail
 
-if [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ]
+if [ "$TRAVIS_BRANCH" = "master" ] && [ "$TRAVIS_PULL_REQUEST" = "false" ] && 0
 then
   git config --global user.email "samccone@gmail.com" && \
   git config --global user.name "auto deployer" && \
