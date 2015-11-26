@@ -111,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Main Content -->
         <div class="content">
-          <iron-pages attr-for-selected="data-route" selected="{{route}}">
+          <lazy-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="home">
               <paper-material elevation="1">
@@ -147,32 +147,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             </section>
 
-            <section data-route="users">
-              <paper-material elevation="1">
-                <h2 class="page-title">Users</h2>
-                <p>This is the users section</p>
-                <a href$="{{baseUrl}}users/Addy">Addy</a><br>
-                <a href$="{{baseUrl}}users/Rob">Rob</a><br>
-                <a href$="{{baseUrl}}users/Chuck">Chuck</a><br>
-                <a href$="{{baseUrl}}users/Sam">Sam</a>
-              </paper-material>
-            </section>
+            <template is="dom-if" data-route="users" restamp>
+              <section>
+                <paper-material elevation="1">
+                  <h2 class="page-title">Users</h2>
+                  <p>This is the users section</p>
+                  <a href$="{{baseUrl}}users/Addy">Addy</a><br>
+                  <a href$="{{baseUrl}}users/Rob">Rob</a><br>
+                  <a href$="{{baseUrl}}users/Chuck">Chuck</a><br>
+                  <a href$="{{baseUrl}}users/Sam">Sam</a>
+                </paper-material>
+              </section>
+            </template>
 
-            <section data-route="user-info">
-              <paper-material elevation="1">
-                <h2 class="page-title">User: {{params.name}}</h2>
-                <div>This is {{params.name}}'s section</div>
-              </paper-material>
-            </section>
+            <template is="dom-if" data-route="user-info" restamp>
+              <section>
+                <paper-material elevation="1">
+                  <h2 class="page-title">User: {{params.name}}</h2>
+                  <div>This is {{params.name}}'s section</div>
+                </paper-material>
+              </section>
+            </template>
 
-            <section data-route="contact">
-              <paper-material elevation="1">
-                <h2 class="page-title">Contact</h2>
-                <p>This is the contact section</p>
-              </paper-material>
-            </section>
+            <template data-route="contact" is="dom-if" restamp>
+              <section data-route="contact">
+                <paper-material elevation="1">
+                  <h2 class="page-title">Contact</h2>
+                  <p>This is the contact section</p>
+                </paper-material>
+              </section>
+            </template>
 
-          </iron-pages>
+          </lazy-pages>
         </div>
       </paper-scroll-header-panel>
     </paper-drawer-panel>
