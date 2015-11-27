@@ -86,6 +86,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-icon icon="mail"></iron-icon>
             <span>Contact</span>
           </a>
+
+          <a data-route="testmodels" href="testmodels">
+            <iron-icon icon="https"></iron-icon>
+            <span>TestModels</span>
+          </a>
         </paper-menu>
       </paper-scroll-header-panel>
 
@@ -174,6 +179,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-material elevation="1">
                   <h2 class="page-title">Contact</h2>
                   <p>This is the contact section</p>
+                </paper-material>
+              </section>
+            </template>
+
+            <template data-route="testmodels" is="dom-if" restamp>
+              <section>
+                <iron-ajax id="ajax" auto handle-as="json"
+                           url="http://localhost:8000/test"
+                           last-response="{{testModels}}"></iron-ajax>
+                <paper-material elevation="1">
+                  <h2 class="page-title">TestModels</h2>
+                  <model-list items="{{testModels}}"></model-list>
+                </paper-material>
+              </section>
+            </template>
+
+            <template data-route="testmodel-detail" is="dom-if" restamp>
+              <section>
+                <iron-ajax id="ajax" auto handle-as="json"
+                           url="http://localhost:8000/test/{{params.id}}"
+                           last-response="{{testModelDetail}}"></iron-ajax>
+                <paper-material elevation="1">
+                  <h2 class="page-title">{{testModelDetail.name}}</h2>
+                  <p>{{testModelDetail.id}}</p>
+                  <p>{{testModelDetail.name}}</p>
+                  <a href="/testmodels">Zurück</a>
                 </paper-material>
               </section>
             </template>
