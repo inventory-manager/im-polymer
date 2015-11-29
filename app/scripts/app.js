@@ -50,4 +50,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.$.paperDrawerPanel.closeDrawer();
   };
 
+  app.validatedSubmit = function(form) {
+    var isValid = true;
+    var children = Array.prototype.slice.call(form.children);
+    children.forEach(function(child) {
+      if (typeof child.validate === 'function') {
+        isValid = child.validate() && isValid;
+      }
+    });
+    if (isValid) {
+      form.submit();
+    }
+  };
+
+  app.clearFormValues = function(form) {
+    var children = Array.prototype.slice.call(form.children);
+    children.forEach(function(child) {
+      if ('value' in child) {
+        child.value = '';
+      }
+    });
+  };
 })(document);
