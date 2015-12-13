@@ -1,0 +1,68 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="login-dialog">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="loginCheckAjax" auto handle-as="json"
+               url="http://localhost:8000/login_status"
+               last-response="{{loginResponse}}"></iron-ajax>
+    <paper-dialog entry-animation="scale-up-animation"
+                  exit-animation="fade-out-animation"
+                  opened="{{!loginResponse.authenticated}}"
+                  modal="true">
+      <h2>Login</h2>
+
+      <template is="dom-if" if="{{loginResponse === null}}">
+        <div>Prüfe Login...</div>
+      </template>
+
+      <template id='testId' is="dom-if" if="{{!loginResponse.authenticated}}">
+        <form is="ajax-form" id="loginForm" action="http://localhost:8000/login_check" method="post"
+              enctype="application/x-www-form-urlencoded">
+          <paper-input name="username" label="Name" required error-message="Pflichtfeld"></paper-input>
+          <paper-input name="password" id="passwordInput" type="password" label="Passwort" required error-message="Pflichtfeld"></paper-input>
+          <paper-button id="loginFormSubmitButton" raised>Abschicken</paper-button>
+        </form>
+        <script>
+var form = document.querySelector('#loginForm');
+var submitButton = document.querySelector('#loginFormSubmitButton');
+submitButton.addEventListener('click', function() {
+  app.validatedSubmit(form);
+});
+form.addEventListener('submitted', function(event) {
+  if (JSON.parse(event.detail.responseText).authenticated === false) {
+    document.querySelector('#passwordInput').value = '';
+    app.$.toast.text = 'Login fehlgeschlagen';
+    app.$.toast.show();
+  } else {
+    var checkLoginAjax = document.querySelector('#loginCheckAjax');
+    checkLoginAjax.generateRequest();
+  }
+});
+        </script>
+      </template>
+    </paper-dialog>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'login-dialog',
+        properties: {
+          loginResponse: {
+            type: Object,
+            notify: true
+          }
+        },
+        ready: function() {
+        }
+      });
+    })();
+  </script>
+</dom-module>

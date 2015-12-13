@@ -1,0 +1,33 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="logout-button">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="logoutAjax" handle-as="json"
+               url="http://localhost:8000/logout"></iron-ajax>
+    <paper-icon-button icon="exit-to-app" id="logoutButton" on-click="onClick"></paper-icon-button>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'logout-button',
+        properties: {
+        },
+        ready: function() {
+        },
+        onClick: function() {
+          var logoutAjax = document.querySelector('#logoutAjax');
+          logoutAjax.generateRequest();
+          location.reload();
+        }
+      });
+    })();
+  </script>
+</dom-module>
