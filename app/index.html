@@ -60,7 +60,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
-    <login-dialog id="loginDialog" loginResponse="{{loginResponse}}"></login-dialog>
+    <login-dialog id="loginDialog" loginResponse="{{loginResponse}}" api-url="{{apiUrl}}"></login-dialog>
 
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
@@ -152,7 +152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template data-route="testmodels" is="dom-if" restamp>
               <section>
                 <iron-ajax id="ajax" auto handle-as="json"
-                           url="http://localhost:8000/test"
+                           url="{{apiUrl}}test"
                            last-response="{{testModels}}"></iron-ajax>
                 <paper-material elevation="1">
                   <h2 class="page-title">TestModels</h2>
@@ -160,7 +160,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-material>
                 <paper-material elevation="1">
                   <h2 class="page-title">Neu</h2>
-                  <form is="ajax-form" id="form" action="http://localhost:8000/test" method="post"
+                  <form is="ajax-form" id="form" action="{{apiUrl}}test" method="post"
                         class="layout horizontal wrap"
                         enctype="application/json">
                     <paper-input name="name" label="Name" required error-message="Pflichtfeld"></paper-input>
@@ -195,7 +195,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template data-route="testmodel-detail" is="dom-if" restamp>
               <section>
                 <iron-ajax id="ajax" auto handle-as="json"
-                           url="http://localhost:8000/test/{{params.id}}"
+                           url="{{apiUrl}}test/{{params.id}}"
                            last-response="{{testModelDetail}}"></iron-ajax>
                 <paper-material elevation="1">
                   <h2 class="page-title">{{testModelDetail.name}}</h2>

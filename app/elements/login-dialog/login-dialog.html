@@ -12,7 +12,7 @@
       }
     </style>
     <iron-ajax id="loginCheckAjax" auto handle-as="json"
-               url="http://localhost:8000/login_status"
+               url="{{apiUrl}}login_status"
                last-response="{{loginResponse}}"></iron-ajax>
     <paper-dialog entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation"
@@ -20,7 +20,7 @@
                   id="loginDialog"
                   modal="true">
       <h2><iron-icon src="../../favicon.ico"></iron-icon> Login erforderlich</h2>
-      <form is="ajax-form" id="loginForm" action="http://localhost:8000/login_check" method="post"
+      <form is="ajax-form" id="loginForm" action="{{apiUrl}}login_check" method="post"
             enctype="application/x-www-form-urlencoded">
         <paper-input name="username" id="usernameInput" label="Name" required error-message="Pflichtfeld"></paper-input>
         <paper-input name="password" id="passwordInput" type="password" label="Passwort" required error-message="Pflichtfeld"></paper-input>
@@ -38,6 +38,10 @@
         properties: {
           loginResponse: {
             type: Object,
+            notify: true
+          },
+          apiUrl: {
+            type: String,
             notify: true
           }
         },
