@@ -118,6 +118,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Main Content -->
         <div class="content">
+          <template is="dom-if" if="{{loading}}">
+            <paper-progress value="10" indeterminate="true" id="progressBar"></paper-progress>
+          </template>
           <lazy-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="home">
