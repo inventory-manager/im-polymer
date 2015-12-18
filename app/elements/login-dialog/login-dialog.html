@@ -6,6 +6,10 @@
       :host {
         display: block;
       }
+      #loginFormSubmitButton {
+        width: 100%;
+        margin: 20px 0 0;
+      }
     </style>
     <iron-ajax id="loginCheckAjax" auto handle-as="json"
                url="http://localhost:8000/login_status"
@@ -13,38 +17,15 @@
     <paper-dialog entry-animation="scale-up-animation"
                   exit-animation="fade-out-animation"
                   opened="{{!loginResponse.authenticated}}"
+                  id="loginDialog"
                   modal="true">
-      <h2>Login</h2>
-
-      <template is="dom-if" if="{{loginResponse === null}}">
-        <div>Prüfe Login...</div>
-      </template>
-
-      <template id='testId' is="dom-if" if="{{!loginResponse.authenticated}}">
-        <form is="ajax-form" id="loginForm" action="http://localhost:8000/login_check" method="post"
-              enctype="application/x-www-form-urlencoded">
-          <paper-input name="username" label="Name" required error-message="Pflichtfeld"></paper-input>
-          <paper-input name="password" id="passwordInput" type="password" label="Passwort" required error-message="Pflichtfeld"></paper-input>
-          <paper-button id="loginFormSubmitButton" raised>Abschicken</paper-button>
-        </form>
-        <script>
-var form = document.querySelector('#loginForm');
-var submitButton = document.querySelector('#loginFormSubmitButton');
-submitButton.addEventListener('click', function() {
-  app.validatedSubmit(form);
-});
-form.addEventListener('submitted', function(event) {
-  if (JSON.parse(event.detail.responseText).authenticated === false) {
-    document.querySelector('#passwordInput').value = '';
-    app.$.toast.text = 'Login fehlgeschlagen';
-    app.$.toast.show();
-  } else {
-    var checkLoginAjax = document.querySelector('#loginCheckAjax');
-    checkLoginAjax.generateRequest();
-  }
-});
-        </script>
-      </template>
+      <h2><iron-icon src="../../favicon.ico"></iron-icon> Login erforderlich</h2>
+      <form is="ajax-form" id="loginForm" action="http://localhost:8000/login_check" method="post"
+            enctype="application/x-www-form-urlencoded">
+        <paper-input name="username" id="usernameInput" label="Name" required error-message="Pflichtfeld"></paper-input>
+        <paper-input name="password" id="passwordInput" type="password" label="Passwort" required error-message="Pflichtfeld"></paper-input>
+        <paper-button id="loginFormSubmitButton" raised>Login</paper-button>
+      </form>
     </paper-dialog>
   </template>
 
@@ -61,6 +42,18 @@ form.addEventListener('submitted', function(event) {
           }
         },
         ready: function() {
+          var pwInput = this.$.passwordInput;
+          var loginAjax = this.$.loginCheckAjax;
+          app.applyGenericFormListeners(this.$.loginForm, this.$.loginFormSubmitButton,
+              function(event) {
+              return event.detail.status === 200 &&
+                     JSON.parse(event.detail.responseText).authenticated === true;
+            }, 'Eingeloggt', 'Login fehlgeschlagen', function() {
+              page('/');
+              loginAjax.generateRequest();
+            }, function() {
+              pwInput.value = '';
+            });
         }
       });
     })();
