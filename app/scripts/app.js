@@ -71,4 +71,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     });
   };
+
+  app.applyGenericFormListeners = function(form, submitButton, successCondition, successMsg,
+                                           failureMsg, successHandler, failureHandler) {
+    submitButton.addEventListener('click', function() {
+      app.validatedSubmit(form);
+    });
+
+    form.addEventListener('submitted', function(event) {
+      var jsonResponse = JSON.parse(event.detail.responseText);
+
+      if (successCondition(event)) {
+        if (successMsg) {
+          app.$.toast.text = successMsg;
+          app.$.toast.show();
+        }
+
+        if (typeof successHandler === 'function') {
+          successHandler();
+        }
+      } else {
+        if (failureMsg) {
+          failureMsg = 'Es ist ein Fehler aufgetreten';
+        }
+
+        if (jsonResponse.hasOwnProperty('error')) {
+          failureMsg += ': ' + jsonResponse.error;
+        }
+        app.$.toast.text = failureMsg;
+        app.$.toast.show();
+
+        if (typeof failureHandler === 'function') {
+          failureHandler();
+        }
+      }
+    });
+  };
 })(document);
