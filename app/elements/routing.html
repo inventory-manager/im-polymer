@@ -58,15 +58,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.route = 'contact';
     });
 
-    page('/testmodels', function() {
-      app.route = 'testmodels';
-    });
-
-    page('/testmodels/:id', function(data) {
-      app.route = 'testmodel-detail';
-      app.params = data.params;
-    });
-
     // 404
     page('*', function() {
       app.$.toast.text = 'Can\'t find: ' + window.location.href  + '. Redirected you to Home Page';
