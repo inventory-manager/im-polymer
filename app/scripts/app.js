@@ -97,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         if (jsonResponse.hasOwnProperty('error')) {
-          failureMsg += ': ' + jsonResponse.error;
+          failureMsg += ': ' + jsonResponse.error.message + '(' + jsonResponse.error.code + ')';
         }
         app.$.toast.text = failureMsg;
         app.$.toast.show();
