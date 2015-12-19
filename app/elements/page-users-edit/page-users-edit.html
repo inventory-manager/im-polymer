@@ -15,7 +15,7 @@
     <paper-material elevation="1">
       <loading-spinner running="{{loading}}"></loading-spinner>
       <h1>{{user.username}} bearbeiten</h1>
-      <form is="ajax-form" id="userEditForm" action="http://localhost:8000/users" method="put"
+      <form is="ajax-form" id="userEditForm" action="{{apiUrl}}users" method="put"
             enctype="application/json">
         <input type="hidden" name="id" value="{{user.id}}">
         <paper-input disabled="{{!canEditHead}}" name="username" type="text" label="Username" value="{{user.username}}" maxlength="32" required error-message="Pflichtfeld"></paper-input>

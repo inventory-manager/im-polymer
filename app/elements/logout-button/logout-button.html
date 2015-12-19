@@ -8,7 +8,7 @@
       }
     </style>
     <iron-ajax id="logoutAjax" handle-as="json"
-               url="http://localhost:8000/logout"></iron-ajax>
+               url="{{apiUrl}}logout"></iron-ajax>
     <paper-icon-button icon="exit-to-app" id="logoutButton" on-click="onClick"></paper-icon-button>
   </template>
 
@@ -19,6 +19,10 @@
       Polymer({
         is: 'logout-button',
         properties: {
+          apiUrl: {
+            type: String,
+            notify: true
+          }
         },
         ready: function() {
         },
