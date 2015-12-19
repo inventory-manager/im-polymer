@@ -1,0 +1,72 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-users">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="userListAjax" auto handle-as="json"
+               url="{{apiUrl}}users"
+               loading="{{loading}}"
+               last-response="{{users}}"></iron-ajax>
+    <paper-material elevation="1">
+      <h1>Benutzer</h1>
+      <table class="im-table">
+        <tr>
+          <th>Benutzername</th>
+          <th>Vorname</th>
+          <th>Nachname</th>
+          <th>Aktionen</th>
+        </tr>
+        <template is="dom-repeat" items="{{users}}">
+          <tr>
+            <td>{{item.username}}</td>
+            <td>{{item.firstName}}</td>
+            <td>{{item.lastName}}</td>
+            <td>
+              <a href="/users/{{item.id}}" class="inherit">
+                <paper-icon-button icon="create"></paper-icon-button>
+              </a>
+            </td>
+          </tr>
+        </template>
+      </table>
+      <paper-button disabled="{{!isAdmin}}" id="newButton" class="bottom-button" raised onclick="page('/users/new');">Neuen Benutzer anlegen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-users',
+        properties: {
+          users: {
+            type: Array,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          isAdmin: {
+            type: Boolean,
+            notify: true
+          }
+        },
+        ready: function() {
+        }
+      });
+    })();
+  </script>
+</dom-module>

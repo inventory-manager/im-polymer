@@ -1,0 +1,59 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-users-new">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <paper-material elevation="1">
+      <h1>Neuen Benutzer erstellen</h1>
+      <form is="ajax-form" id="userNewForm" action="{{apiUrl}}users" method="post"
+            enctype="application/json">
+        <paper-input name="username" type="text" label="Username" value="{{user.username}}" maxlength="32" required error-message="Pflichtfeld"></paper-input>
+        <paper-input name="firstName" type="text" label="Vorname" value="{{user.firstName}}" maxlength="32"></paper-input>
+        <paper-input name="lastName" type="text" label="Nachname" value="{{user.lastName}}" maxlength="32"></paper-input>
+        <paper-input name="email" type="text" label="Email" value="{{user.email}}" maxlength="40"></paper-input>
+        <paper-input name="password" type="password" label="Passwort" maxlength="40" minlength="5" required error-message="Mindestens 5 Zeichen lang"></paper-input>
+      </form>
+      <div>
+        <span>Rolle:</span>
+        <paper-radio-group selected="ROLE_USER">
+          <paper-radio-button id="radioAdmin" name="ROLE_ADMIN">Administrator</paper-radio-button>
+          <paper-radio-button id="radioUser" name="ROLE_USER">User</paper-radio-button>
+        </paper-radio-group>
+      </div>
+      <paper-button id="userNewFormSubmitButton" class="bottom-button" raised>Benutzer erstellen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-users-new',
+        properties: {
+          apiUrl: {
+            type: String,
+            notify: true
+          }
+        },
+        ready: function() {
+          var radioAdmin = this.$.radioAdmin;
+          app.applyGenericFormListeners(this.$.userNewForm, this.$.userNewFormSubmitButton,
+            function(event) {
+              return event.detail.status === 201;
+            }, 'Benutzer erstellt', 'Benutzererstellung fehlgeschlagen', function() {
+              page('/users');
+            }, null, function(event) {
+              var formData = event.detail.formData;
+              formData.role = radioAdmin.checked === true ? 'ROLE_ADMIN' : 'ROLE_USER';
+            });
+        }
+      });
+    })();
+  </script>
+</dom-module>

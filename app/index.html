@@ -81,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <a data-route="users" href="users">
             <iron-icon icon="info"></iron-icon>
-            <span>Users</span>
+            <span>Benutzer</span>
           </a>
         </paper-menu>
       </paper-scroll-header-panel>
@@ -95,7 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
-          <span>{{loggedInUser.username}}</span>
+          <span><a href="/users/{{loggedInUser.id}}" class="inherit">{{loggedInUser.username}}</a></span>
           <logout-button></logout-button>
           <paper-icon-button icon="refresh"></paper-icon-button>
           <paper-icon-button icon="search"></paper-icon-button>
@@ -125,17 +125,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <template is="dom-if" data-route="users" restamp>
               <section>
-                <paper-material elevation="1">
-                  <h1>Users</h1>
-                </paper-material>
+                <page-users is-admin="{{loggedInUser.isAdmin}}" loading="{{loading}}" api-url="{{apiUrl}}"></page-users>
               </section>
             </template>
 
-            <template is="dom-if" data-route="user-info" restamp>
+            <template is="dom-if" data-route="users-edit" restamp>
               <section>
-                <paper-material elevation="1">
-                  <h1>Userinfo</h1>
-                </paper-material>
+                <page-users-edit logged-in-user="{{loggedInUser}}" user-id="{{params.id}}" loading="{{loading}}" api-url="{{apiUrl}}"></page-users-edit>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="users-new" restamp>
+              <section>
+                <page-users-new api-url="{{apiUrl}}"></page-users-new>
               </section>
             </template>
 
