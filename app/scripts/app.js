@@ -74,10 +74,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.applyGenericFormListeners = function(form, submitButton, successCondition, successMsg,
-                                           failureMsg, successHandler, failureHandler) {
+                                           failureMsg, successHandler, failureHandler,
+                                           submittingHandler) {
     submitButton.addEventListener('click', function() {
       app.validatedSubmit(form);
     });
+
+    if (typeof submittingHandler === 'function') {
+      form.addEventListener('submitting', submittingHandler);
+    }
 
     form.addEventListener('submitted', function(event) {
       var jsonResponse = JSON.parse(event.detail.responseText);
