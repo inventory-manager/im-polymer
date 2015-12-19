@@ -2,6 +2,7 @@
 
 <dom-module id="login-dialog">
   <template>
+    <style include="shared-styles"></style>
     <style>
       :host {
         display: block;
@@ -66,7 +67,8 @@
             });
         },
         _loginResponseObserver: function() {
-          if (this.loginResponse && this.loginResponse !== null && this.loginResponse.authenticated) {
+          if (this.loginResponse && this.loginResponse !== null &&
+              this.loginResponse.authenticated) {
             this.loggedInUser = this.loginResponse.user;
           } else {
             this.loggedInUser = null;

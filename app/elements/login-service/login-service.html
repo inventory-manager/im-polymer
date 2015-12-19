@@ -28,8 +28,6 @@
           if (this.loggedInUser && this.loggedInUser !== null) {
             this.loggedInUser.authentificated = true;
             this.loggedInUser.isAdmin = this.loggedInUser.role.name === 'ROLE_ADMIN';
-          } else {
-            this.loggedInUser.authentificated = false;
           }
         }
       });
