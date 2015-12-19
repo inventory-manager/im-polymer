@@ -38,10 +38,15 @@
         properties: {
           loginResponse: {
             type: Object,
-            notify: true
+            notify: true,
+            observer: '_loginResponseObserver'
           },
           apiUrl: {
             type: String,
+            notify: true
+          },
+          loggedInUser: {
+            type: Object,
             notify: true
           }
         },
@@ -59,6 +64,13 @@
               pwInput.value = '';
               pwInput.inputElement.focus();
             });
+        },
+        _loginResponseObserver: function() {
+          if (this.loginResponse && this.loginResponse !== null && this.loginResponse.authenticated) {
+            this.loggedInUser = this.loginResponse.user;
+          } else {
+            this.loggedInUser = null;
+          }
         }
       });
     })();

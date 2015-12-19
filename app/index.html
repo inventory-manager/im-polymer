@@ -60,7 +60,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
-    <login-dialog id="loginDialog" loginResponse="{{loginResponse}}" api-url="{{apiUrl}}"></login-dialog>
+    <login-service logged-in-user="{{loggedInUser}}"></login-service>
+    <login-dialog id="loginDialog" logged-in-user="{{loggedInUser}}" api-url="{{apiUrl}}"></login-dialog>
 
     <paper-drawer-panel id="paperDrawerPanel" responsive-width="700px">
       <!-- Drawer Scroll Header Panel -->
@@ -94,6 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
+          <span>{{loggedInUser.username}}</span>
           <logout-button></logout-button>
           <paper-icon-button icon="refresh"></paper-icon-button>
           <paper-icon-button icon="search"></paper-icon-button>
