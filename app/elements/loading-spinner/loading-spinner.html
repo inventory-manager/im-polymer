@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="loading-spinner">
+  <template>
+    <style>
+      :host {
+        display: block;
+        background: white;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 3px;
+        z-index: 100;
+      }
+
+      paper-spinner {
+        margin: auto;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        max-height: 100px;
+        max-width: 100px;
+      }
+    </style>
+    <paper-spinner active></paper-spinner>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'loading-spinner',
+        behaviors: [
+          Polymer.NeonAnimationRunnerBehavior
+        ],
+        properties: {
+          animationConfig: {
+            value: function() {
+              return {
+                'exit': {
+                  name: 'fade-out-animation',
+                  node: this
+                }
+              };
+            }
+          },
+          running: {
+            type: Boolean,
+            notify: true,
+            readOnly: false,
+            observer: '_onRunningChange'
+          }
+        },
+        listeners: {
+          'neon-animation-finish': '_onNeonAnimationFinish'
+        },
+        ready: function() {
+        },
+        readyForStart: true,
+        _onRunningChange: function() {
+          if (!this.running && this.readyForStart) {
+            this.readyForStart = false;
+            this.async(function() {
+              this.playAnimation('exit');
+            }, 300);
+          }
+        },
+        _onNeonAnimationFinish: function() {
+          if (!this.running) {
+            this.style.display = 'none';
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

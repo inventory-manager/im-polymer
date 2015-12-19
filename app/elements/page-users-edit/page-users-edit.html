@@ -13,6 +13,7 @@
                last-response="{{user}}"
                loading="{{loading}}"></iron-ajax>
     <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
       <h1>{{user.username}} bearbeiten</h1>
       <form is="ajax-form" id="userEditForm" action="http://localhost:8000/users" method="put"
             enctype="application/json">
