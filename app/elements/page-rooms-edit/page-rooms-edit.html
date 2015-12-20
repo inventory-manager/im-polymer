@@ -1,0 +1,105 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-rooms-edit">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-dropdown-menu {
+        width: 200px;
+      }
+    </style>
+    <iron-ajax id="roomDetailAjax" auto handle-as="json"
+               url="{{apiUrl}}rooms/{{roomNumber}}"
+               last-response="{{room}}"
+               loading="{{loading}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>{{room.roomNumber}} bearbeiten</h1>
+      <form is="ajax-form" id="roomEditForm" action="{{apiUrl}}rooms" method="put"
+            enctype="application/json">
+        <input type="hidden" name="oldRoomNumber" value="{{oldRoomNumber}}">
+        <paper-input name="roomNumber" type="text" label="Raumnummer" value="{{room.roomNumber}}" maxlength="32" required error-message="Pflichtfeld"></paper-input>
+        <input type="hidden" name="type" value="{{room.type.id}}">
+        <input type="hidden" name="user" value="{{room.user.id}}">
+      </form>
+      <iron-ajax id="roomTypesAjax" auto handle-as="json"
+                 url="{{apiUrl}}roomtypes"
+                 last-response="{{roomTypes}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Raumtyp">
+        <paper-menu class="dropdown-content" selected="{{room.type.id}}" name="type" attr-for-selected="value">
+          <template is="dom-repeat" items="{{roomTypes}}">
+            <paper-item value="{{item.id}}">{{item.description}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="userAjax" auto handle-as="json"
+                 url="{{apiUrl}}users"
+                 last-response="{{users}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Betreuer">
+        <paper-menu class="dropdown-content" selected="{{room.user.id}}" name="type" attr-for-selected="value">
+          <template is="dom-repeat" items="{{users}}">
+            <paper-item value="{{item.id}}">{{item.username}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <change-data edited-by="{{room.editedBy}}" edited-date="{{room.editedDate}}" created-by="{{room.createdBy}}" created-date="{{room.createdDate}}"></change-data>
+      <paper-button id="roomEditFormSubmitButton" class="bottom-button" raised>Änderungen übernehmen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-rooms-edit',
+        properties: {
+          roomNumber: {
+            type: String,
+            notify: true
+          },
+          room: {
+            type: Object,
+            notify: true
+          },
+          oldRoomNumber: {
+            type: String,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          roomTypes: {
+            type: Array,
+            notify: true
+          },
+          users: {
+            type: Array,
+            notify: true
+          }
+        },
+        ready: function() {
+          this.oldRoomNumber = this.roomNumber;
+          app.applyGenericFormListeners(this.$.roomEditForm, this.$.roomEditFormSubmitButton,
+            function(event) {
+              return event.detail.status === 200;
+            }, 'Raum gespeichert', 'Raumänderung fehlgeschlagen', function() {
+              page('/rooms');
+            }, null, null);
+        }
+      });
+    })();
+  </script>
+</dom-module>

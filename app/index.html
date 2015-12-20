@@ -83,6 +83,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-icon icon="info"></iron-icon>
             <span>Benutzer</span>
           </a>
+
+          <a data-route="rooms" href="rooms">
+            <iron-icon icon="info"></iron-icon>
+            <span>Räume</span>
+          </a>
         </paper-menu>
       </paper-scroll-header-panel>
 
@@ -138,6 +143,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" data-route="users-new" restamp>
               <section>
                 <page-users-new api-url="{{apiUrl}}"></page-users-new>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="rooms" restamp>
+              <section>
+                <page-rooms loading="{{loading}}" api-url="{{apiUrl}}"></page-rooms>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="rooms-edit" restamp>
+              <section>
+                <page-rooms-edit room-number="{{params.id}}" loading="{{loading}}" api-url="{{apiUrl}}"></page-rooms-edit>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="rooms-new" restamp>
+              <section>
+                <page-rooms-new api-url="{{apiUrl}}"></page-rooms-new>
               </section>
             </template>
 
