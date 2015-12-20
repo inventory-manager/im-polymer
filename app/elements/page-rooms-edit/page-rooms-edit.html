@@ -7,6 +7,9 @@
       :host {
         display: block;
       }
+      paper-dropdown-menu {
+        width: 200px;
+      }
     </style>
     <iron-ajax id="roomDetailAjax" auto handle-as="json"
                url="{{apiUrl}}rooms/{{roomNumber}}"
