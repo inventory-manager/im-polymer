@@ -16,30 +16,37 @@
         margin-left: 0;
       }
 
-      table.im-table {
+      .im-table {
         width: 100%;
         border-radius: 3px;
         border: 2px solid var(--default-primary-color);
         padding: 0;
         border-spacing: 0;
+        display: table
       }
 
-      .im-table th {
+      .im-table .th {
         background: var(--default-primary-color);
         text-align: left;
         color: var(--text-primary-color);
         padding: 2px;
+        display: table-cell;
       }
 
-      .im-table td {
+      .im-table .td {
         padding: 2px;
+        display: table-cell;
       }
 
-      .im-table tr:hover td {
+      .im-table .tr {
+        display: table-row;
+      }
+
+      .im-table .tr:hover .td {
         background: var(--light-primary-color);
       }
 
-      .im-table td paper-icon-button {
+      .im-table .td paper-icon-button {
         color: var(--default-primary-color)
       }
 
