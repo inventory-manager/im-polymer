@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   // Sets app default base URL
   app.baseUrl = '/';
+  app.apiUrl = window.location.port === '' ? '/app.php/' : 'http://localhost:8000/';
   if (window.location.port === '') {  // if production
     // Uncomment app.baseURL below and
     // set app.baseURL to '/your-pathname/' if running from folder in production
@@ -68,6 +69,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     children.forEach(function(child) {
       if ('value' in child) {
         child.value = '';
+      }
+    });
+  };
+
+  app.applyGenericFormListeners = function(form, submitButton, successCondition, successMsg,
+                                           failureMsg, successHandler, failureHandler,
+                                           submittingHandler) {
+    submitButton.addEventListener('click', function() {
+      app.validatedSubmit(form);
+    });
+
+    if (typeof submittingHandler === 'function') {
+      form.addEventListener('submitting', submittingHandler);
+    }
+
+    form.addEventListener('submitted', function(event) {
+      var jsonResponse = JSON.parse(event.detail.responseText);
+
+      if (successCondition(event)) {
+        if (successMsg) {
+          app.$.toast.text = successMsg;
+          app.$.toast.show();
+        }
+
+        if (typeof successHandler === 'function') {
+          successHandler();
+        }
+      } else {
+        if (failureMsg) {
+          failureMsg = 'Es ist ein Fehler aufgetreten';
+        }
+
+        if (jsonResponse.hasOwnProperty('error')) {
+          failureMsg += ': ' + jsonResponse.error.message + '(' + jsonResponse.error.code + ')';
+        }
+        app.$.toast.text = failureMsg;
+        app.$.toast.show();
+
+        if (typeof failureHandler === 'function') {
+          failureHandler();
+        }
       }
     });
   };

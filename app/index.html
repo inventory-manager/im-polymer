@@ -58,11 +58,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body unresolved class="fullbleed layout vertical">
-  <login-dialog id="loginDialog" loginResponse="{{loginResponse}}"></login-dialog>
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
+    <login-service logged-in-user="{{loggedInUser}}"></login-service>
+    <login-dialog id="loginDialog" logged-in-user="{{loggedInUser}}" api-url="{{apiUrl}}"></login-dialog>
 
-    <paper-drawer-panel id="paperDrawerPanel">
+    <paper-drawer-panel id="paperDrawerPanel" responsive-width="700px">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>
 
@@ -80,17 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <a data-route="users" href="users">
             <iron-icon icon="info"></iron-icon>
-            <span>Users</span>
-          </a>
-
-          <a data-route="contact" href="contact">
-            <iron-icon icon="mail"></iron-icon>
-            <span>Contact</span>
-          </a>
-
-          <a data-route="testmodels" href="testmodels">
-            <iron-icon icon="https"></iron-icon>
-            <span>TestModels</span>
+            <span>Benutzer</span>
           </a>
         </paper-menu>
       </paper-scroll-header-panel>
@@ -104,7 +95,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <span class="flex"></span>
 
           <!-- Toolbar icons -->
-          <logout-button></logout-button>
+          <span><a href="/users/{{loggedInUser.id}}" class="inherit">{{loggedInUser.username}}</a></span>
+          <logout-button api-url="{{apiUrl}}"></logout-button>
           <paper-icon-button icon="refresh"></paper-icon-button>
           <paper-icon-button icon="search"></paper-icon-button>
 
@@ -118,127 +110,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <!-- Main Content -->
         <div class="content">
+          <div id="progressBarContainer">
+            <template is="dom-if" if="{{loading}}">
+              <paper-progress value="10" indeterminate="true" id="progressBar"></paper-progress>
+            </template>
+          </div>
           <lazy-pages attr-for-selected="data-route" selected="{{route}}">
 
             <section data-route="home">
               <paper-material elevation="1">
-                <my-greeting></my-greeting>
-
-                <p class="paper-font-subhead">You now have:</p>
-                <my-list></my-list>
-
-                <p class="paper-font-body2">Looking for more Web App layouts? Check out our <a href="https://github.com/PolymerElements/app-layout-templates">layouts</a> collection. You can also <a href="http://polymerelements.github.io/app-layout-templates/">preview</a> them live.</p>
+                <h1>HOME</h1>
               </paper-material>
-              <paper-material elevation="1">
-                <p class="paper-font-body2">This is another card.</p>
-              </paper-material>
-
-              <paper-material elevation="1" class="paper-font-body2">
-                <h1 id="license">License</h1>
-                <p>Everything in this repo is BSD style license unless otherwise specified.</p>
-                <p>Copyright (c) 2015 The Polymer Authors. All rights reserved.</p>
-                <p>Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:</p>
-                <ul>
-                <li>Redistributions of source code must retain the above copyright
-                notice, this list of conditions and the following disclaimer.</li>
-                <li>Redistributions in binary form must reproduce the above
-                copyright notice, this list of conditions and the following disclaimer
-                in the documentation and/or other materials provided with the
-                distribution.</li>
-                <li>Neither the name of Google Inc. nor the names of its
-                contributors may be used to endorse or promote products derived from
-                this software without specific prior written permission.</li>
-                </ul>
-                <p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p>
-              </paper-material>
-
             </section>
 
             <template is="dom-if" data-route="users" restamp>
               <section>
-                <paper-material elevation="1">
-                  <h2 class="page-title">Users</h2>
-                  <p>This is the users section</p>
-                  <a href$="{{baseUrl}}users/Addy">Addy</a><br>
-                  <a href$="{{baseUrl}}users/Rob">Rob</a><br>
-                  <a href$="{{baseUrl}}users/Chuck">Chuck</a><br>
-                  <a href$="{{baseUrl}}users/Sam">Sam</a>
-                </paper-material>
+                <page-users is-admin="{{loggedInUser.isAdmin}}" loading="{{loading}}" api-url="{{apiUrl}}"></page-users>
               </section>
             </template>
 
-            <template is="dom-if" data-route="user-info" restamp>
+            <template is="dom-if" data-route="users-edit" restamp>
               <section>
-                <paper-material elevation="1">
-                  <h2 class="page-title">User: {{params.name}}</h2>
-                  <div>This is {{params.name}}'s section</div>
-                </paper-material>
+                <page-users-edit logged-in-user="{{loggedInUser}}" user-id="{{params.id}}" loading="{{loading}}" api-url="{{apiUrl}}"></page-users-edit>
               </section>
             </template>
 
-            <template data-route="contact" is="dom-if" restamp>
-              <section data-route="contact">
-                <paper-material elevation="1">
-                  <h2 class="page-title">Contact</h2>
-                  <p>This is the contact section</p>
-                </paper-material>
-              </section>
-            </template>
-
-            <template data-route="testmodels" is="dom-if" restamp>
+            <template is="dom-if" data-route="users-new" restamp>
               <section>
-                <iron-ajax id="ajax" auto handle-as="json"
-                           url="http://localhost:8000/test"
-                           last-response="{{testModels}}"></iron-ajax>
-                <paper-material elevation="1">
-                  <h2 class="page-title">TestModels</h2>
-                  <model-list items="{{testModels}}"></model-list>
-                </paper-material>
-                <paper-material elevation="1">
-                  <h2 class="page-title">Neu</h2>
-                  <form is="ajax-form" id="form" action="http://localhost:8000/test" method="post"
-                        class="layout horizontal wrap"
-                        enctype="application/json">
-                    <paper-input name="name" label="Name" required error-message="Pflichtfeld"></paper-input>
-                    <paper-input name="id" label="Id" required error-message="Pflichtfeld"></paper-input>
-                  </form>
-
-                  <div class="layout horizontal">
-                    <div class="flex"></div>
-                    <paper-button id="submitButton" raised>Abschicken</paper-button>
-                  </div>
-
-                  <script>
-                    var form = document.querySelector('#form');
-                    var submitButton = document.querySelector('#submitButton');
-                    submitButton.addEventListener('click', function() {
-                      app.validatedSubmit(form);
-                    });
-                    form.addEventListener('submitted', function(event) {
-                      if (event.detail.status === 201) {
-                        app.clearFormValues(form);
-                        app.$.toast.text = 'Neuen Eintrag angelegt';
-                      } else {
-                        app.$.toast.text = 'Es ist ein Fehler aufgetreten:' + event.detail.status;
-                      }
-                      app.$.toast.show();
-                    });
-                  </script>
-                </paper-material>
-              </section>
-            </template>
-
-            <template data-route="testmodel-detail" is="dom-if" restamp>
-              <section>
-                <iron-ajax id="ajax" auto handle-as="json"
-                           url="http://localhost:8000/test/{{params.id}}"
-                           last-response="{{testModelDetail}}"></iron-ajax>
-                <paper-material elevation="1">
-                  <h2 class="page-title">{{testModelDetail.name}}</h2>
-                  <p>{{testModelDetail.id}}</p>
-                  <p>{{testModelDetail.name}}</p>
-                  <a href="/testmodels">Zurück</a>
-                </paper-material>
+                <page-users-new api-url="{{apiUrl}}"></page-users-new>
               </section>
             </template>
 
@@ -247,7 +146,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-scroll-header-panel>
     </paper-drawer-panel>
 
-    <paper-toast id="toast" class="fit-bottom">
+    <paper-toast id="toast" class="fit-bottom" duration="5000">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
     </paper-toast>
 

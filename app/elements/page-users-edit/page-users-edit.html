@@ -1,0 +1,103 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-users-edit">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="userDetailAjax" auto handle-as="json"
+               url="{{apiUrl}}users/{{userId}}"
+               last-response="{{user}}"
+               loading="{{loading}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>{{user.username}} bearbeiten</h1>
+      <form is="ajax-form" id="userEditForm" action="{{apiUrl}}users" method="put"
+            enctype="application/json">
+        <input type="hidden" name="id" value="{{user.id}}">
+        <paper-input disabled="{{!canEditHead}}" name="username" type="text" label="Username" value="{{user.username}}" maxlength="32" required error-message="Pflichtfeld"></paper-input>
+        <paper-input disabled="{{!canEditHead}}" name="firstName" type="text" label="Vorname" value="{{user.firstName}}" maxlength="32"></paper-input>
+        <paper-input disabled="{{!canEditHead}}" name="lastName" type="text" label="Nachname" value="{{user.lastName}}" maxlength="32"></paper-input>
+        <paper-input disabled="{{!canEditHead}}" name="email" type="text" label="Email" value="{{user.email}}" maxlength="40"></paper-input>
+        <paper-input disabled="{{!canEditHead}}" name="password" type="password" label="Passwort" maxlength="40" minlength="5" error-message="Mindestens 5 Zeichen lang"></paper-input>
+      </form>
+      <span>Rolle:</span>
+      <paper-radio-group selected="{{user.role.name}}">
+        <paper-radio-button disabled="{{!canEditRoles}}" id="radioAdmin" name="ROLE_ADMIN">Administrator</paper-radio-button>
+        <paper-radio-button disabled="{{!canEditRoles}}" id="radioUser" name="ROLE_USER">User</paper-radio-button>
+      </paper-radio-group>
+      <change-data edited-by="{{user.editedBy}}" edited-date="{{user.editedDate}}" created-by="{{user.createdBy}}" created-date="{{user.createdDate}}"></change-data>
+      <paper-button disabled="{{!canEditHead}}" id="userEditFormSubmitButton" class="bottom-button" raised>Änderungen übernehmen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-users-edit',
+        properties: {
+          userId: {
+            type: String,
+            notify: true
+          },
+          user: {
+            type: Object,
+            notify: true,
+            observer: '_canEditSupplier'
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          loggedInUser: {
+            type: Object,
+            notify: true,
+            observer: '_canEditSupplier'
+          },
+          canEditHead: {
+            type: Boolean,
+            notify: true,
+            value: true
+          },
+          canEditRoles: {
+            type: Boolean,
+            notify: true,
+            value: true
+          }
+        },
+        ready: function() {
+          var radioAdmin = this.$.radioAdmin;
+          app.applyGenericFormListeners(this.$.userEditForm, this.$.userEditFormSubmitButton,
+            function(event) {
+              return event.detail.status === 200;
+            }, 'Benutzer gespeichert', 'Benutzeränderung fehlgeschlagen', function() {
+              page('/users');
+            }, null, function(event) {
+              var formData = event.detail.formData;
+              formData.role = radioAdmin.checked === true ? 'ROLE_ADMIN' : 'ROLE_USER';
+              if (formData.password === '') {
+                delete formData.password;
+              }
+            });
+        },
+        _canEditSupplier: function() {
+          if (this.loggedInUser && this.loggedInUser !== null && this.user && this.user !== null) {
+            this.canEditHead = this.loggedInUser.isAdmin || this.user.id === this.loggedInUser.id;
+            this.canEditRoles = this.loggedInUser.isAdmin;
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>

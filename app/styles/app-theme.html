@@ -49,11 +49,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     --paper-input-container-focus-color: var(--default-primary-color);
     --paper-input-container-input-color: var(--default-primary-color);
 
-    /* paper-button */
-    --paper-button: {
-      background-color: var(--default-primary-color);
-      color: var(--text-primary-color);
-    }
+    --iron-overlay-backdrop-opacity: 1;
+    --iron-overlay-backdrop-background-color: var(--dark-primary-color);
+
+    --paper-progress-active-color: var(--default-primary-color);
   }
 
   /* General styles */
@@ -62,6 +61,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     color: var(--secondary-text-color);
     background-color: var(--drawer-menu-color);
     border-bottom: var(--drawer-toolbar-border-color);
+  }
+
+  #progressBarContainer {
+    height: 4px;
+  }
+
+  #progressBar {
+    width:100%;
   }
 
   paper-scroll-header-panel {
@@ -141,7 +148,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* Breakpoints */
 
   /* Small */
-  @media (max-width: 600px) {
+  @media (max-width: 800px) {
 
     paper-material {
       --menu-container-display: none;
@@ -162,7 +169,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 
   /* Tablet+ */
-  @media (min-width: 601px) {
+  @media (min-width: 801px) {
 
     paper-material {
       width: calc(98% - 46px);

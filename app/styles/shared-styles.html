@@ -2,8 +2,67 @@
 <dom-module id="shared-styles">
   <template>
     <style>
+      .inherit {
+        color: inherit;
+        background-color: inherit;
+      }
+
       .page-title {
         @apply(--paper-font-display2);
+      }
+
+      .bottom-button {
+        margin-top: 5px;
+        margin-left: 0;
+      }
+
+      .im-table {
+        width: 100%;
+        border-radius: 3px;
+        border: 2px solid var(--default-primary-color);
+        padding: 0;
+        border-spacing: 0;
+        display: table
+      }
+
+      .im-table .th {
+        background: var(--default-primary-color);
+        text-align: left;
+        color: var(--text-primary-color);
+        padding: 2px;
+        display: table-cell;
+      }
+
+      .im-table .td {
+        padding: 2px;
+        display: table-cell;
+      }
+
+      .im-table .tr {
+        display: table-row;
+      }
+
+      .im-table .tr:hover .td {
+        background: var(--light-primary-color);
+      }
+
+      .im-table .td paper-icon-button {
+        color: var(--default-primary-color)
+      }
+
+      paper-input {
+        --paper-input-container-disabled: {
+          opacity: 0.85;
+        }
+      }
+
+      paper-button {
+        background-color: var(--default-primary-color);
+        color: var(--text-primary-color);
+        --paper-button-disabled: {
+          background-color: #eaeaea !important;
+          color: #a8a8a8 !important;
+        }
       }
 
       paper-menu a > *, paper-menu paper-item > *, paper-menu paper-icon-item > * {
@@ -13,6 +72,35 @@
       @media (max-width: 600px) {
         .page-title {
           font-size: 24px!important;
+        }
+      }
+
+      paper-material {
+        border-radius: 2px;
+        height: 100%;
+        padding: 16px 0 16px 0;
+        width: calc(98.66% - 16px);
+        margin: 16px auto;
+        background: white;
+      }
+
+      /* Tablet+ */
+      @media (min-width: 801px) {
+
+        paper-material {
+          width: calc(98% - 46px);
+          margin-bottom: 32px;
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+      }
+
+      @media (max-width: 800px) {
+        paper-material {
+          --menu-container-display: none;
+          width: calc(97.33% - 32px);
+          padding-left: 16px;
+          padding-right: 16px;
         }
       }
     </style>

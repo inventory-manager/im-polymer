@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="change-data">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      span {
+        @apply(--paper-font-caption)
+      }
+    </style>
+    <div>
+      <span>Erstellt von: {{createdBy}} ({{createdDate}})</span>
+      <span>Zuletzt geändert von: {{editedBy}} ({{editedDate}})</span>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'change-data',
+        properties: {
+          createdBy: {
+            type: String,
+            notify: true
+          },
+          editedBy: {
+            type: String,
+            notify: true
+          },
+          createdDate: {
+            type: String,
+            notify: true
+          },
+          editedDate: {
+            type: String,
+            notify: true
+          }
+        },
+        ready: function() {
+
+        }
+      });
+    })();
+  </script>
+</dom-module>

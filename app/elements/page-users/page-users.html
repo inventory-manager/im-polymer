@@ -1,0 +1,73 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-users">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="userListAjax" auto handle-as="json"
+               url="{{apiUrl}}users"
+               loading="{{loading}}"
+               last-response="{{users}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>Benutzer</h1>
+      <div class="im-table">
+        <div class="tr">
+          <div class="th">Benutzername</div>
+          <div class="th">Vorname</div>
+          <div class="th">Nachname</div>
+          <div class="th">Aktionen</div>
+        </div>
+        <template is="dom-repeat" items="{{users}}">
+          <div class="tr">
+            <div class="td">{{item.username}}</div>
+            <div class="td">{{item.firstName}}</div>
+            <div class="td">{{item.lastName}}</div>
+            <div class="td">
+              <a href="/users/{{item.id}}" class="inherit">
+                <paper-icon-button icon="create"></paper-icon-button>
+              </a>
+            </div>
+          </div>
+        </template>
+      </div>
+      <paper-button disabled="{{!isAdmin}}" id="newButton" class="bottom-button" raised onclick="page('/users/new');">Neuen Benutzer anlegen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-users',
+        properties: {
+          users: {
+            type: Array,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          isAdmin: {
+            type: Boolean,
+            notify: true
+          }
+        },
+        ready: function() {
+        }
+      });
+    })();
+  </script>
+</dom-module>

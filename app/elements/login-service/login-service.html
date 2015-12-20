@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="login-service">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'login-service',
+        properties: {
+          loggedInUser: {
+            type: Object,
+            notify: true,
+            observer: '_userObserver'
+          }
+        },
+        ready: function() {
+        },
+        _userObserver: function() {
+          if (this.loggedInUser && this.loggedInUser !== null) {
+            this.loggedInUser.authentificated = true;
+            this.loggedInUser.isAdmin = this.loggedInUser.role.name === 'ROLE_ADMIN';
+          }
+        }
+      });
+    })();
+  </script>
+</dom-module>
