@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-rooms-new">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <paper-material elevation="1">
+      <h1>Neuen Raum erstellen</h1>
+      <form is="ajax-form" id="roomNewForm" action="{{apiUrl}}rooms" method="post"
+            enctype="application/json">
+        <paper-input name="roomNumber" type="text" label="Raumnummer" value="" maxlength="32" required error-message="Pflichtfeld"></paper-input>
+        <input type="hidden" name="type" value="{{roomType}}">
+        <input type="hidden" name="user" value="{{user}}">
+      </form>
+      <iron-ajax id="roomTypesAjax" auto handle-as="json"
+                 url="{{apiUrl}}roomtypes"
+                 last-response="{{roomTypes}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Raumtyp">
+        <paper-menu class="dropdown-content" selected="{{roomType}}" name="type" attr-for-selected="value">
+          <template is="dom-repeat" items="{{roomTypes}}">
+            <paper-item value="{{item.id}}">{{item.description}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="userAjax" auto handle-as="json"
+                 url="{{apiUrl}}users"
+                 last-response="{{users}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Betreuer">
+        <paper-menu class="dropdown-content" selected="{{user}}" name="type" attr-for-selected="value">
+          <template is="dom-repeat" items="{{users}}">
+            <paper-item value="{{item.id}}">{{item.username}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <div></div>
+      <paper-button id="roomNewFormSubmitButton" class="bottom-button" raised>Raum erstellen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-rooms-new',
+        properties: {
+          roomType: {
+            type: String,
+            notify: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          roomTypes: {
+            type: Array,
+            notify: true
+          },
+          users: {
+            type: Array,
+            notify: true
+          }
+        },
+        ready: function() {
+          app.applyGenericFormListeners(this.$.roomNewForm, this.$.roomNewFormSubmitButton,
+            function(event) {
+              return event.detail.status === 201;
+            }, 'Raum erstellt', 'Raumerstellung fehlgeschlagen', function() {
+              page('/rooms');
+            }, null, null);
+        }
+      });
+    })();
+  </script>
+</dom-module>

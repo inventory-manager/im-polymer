@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-rooms">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="roomListAjax" auto handle-as="json"
+               url="{{apiUrl}}rooms"
+               loading="{{loading}}"
+               last-response="{{rooms}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>Räume</h1>
+      <div class="im-table">
+        <div class="tr">
+          <div class="th">Raumnummer</div>
+          <div class="th">Raumtyp</div>
+          <div class="th">Betreuer</div>
+          <div class="th">Aktionen</div>
+        </div>
+        <template is="dom-repeat" items="{{rooms}}">
+          <div class="tr">
+            <div class="td">{{item.roomNumber}}</div>
+            <div class="td">{{item.type.description}}</div>
+            <div class="td">{{item.user.username}}</div>
+            <div class="td">
+              <a href="/rooms/{{item.roomNumber}}" class="inherit">
+                <paper-icon-button icon="create"></paper-icon-button>
+              </a>
+            </div>
+          </div>
+        </template>
+      </div>
+      <paper-button id="newButton" class="bottom-button" raised onclick="page('/rooms/new');">Neuen Raum anlegen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-rooms',
+        properties: {
+          rooms: {
+            type: Array,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          }
+        },
+        ready: function() {
+        }
+      });
+    })();
+  </script>
+</dom-module>
