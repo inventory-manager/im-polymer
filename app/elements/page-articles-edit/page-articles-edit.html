@@ -1,0 +1,92 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-articles-edit">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-dropdown-menu {
+        width: 200px;
+      }
+    </style>
+    <iron-ajax id="articleDetailAjax" auto handle-as="json"
+               url="{{apiUrl}}articles/{{articleNumber}}"
+               last-response="{{article}}"
+               loading="{{loading}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>{{article.name}} ({{article.articleNumber}}) bearbeiten</h1>
+      <form is="ajax-form" id="articleEditForm" action="{{apiUrl}}articles" method="put"
+            enctype="application/json">
+        <input type="hidden" name="oldArticleNumber" value="{{oldArticleNumber}}">
+        <paper-input name="articleNumber" type="text" label="Artikelnummer" value="{{article.articleNumber}}" maxlength="40" required error-message="Pflichtfeld"></paper-input>
+        <paper-input name="description" rows="2" type="text" label="Beschreibung" value="{{article.description}}" maxlength="120"></paper-input>
+        <paper-input name="name" type="text" label="Name" value="{{article.name}}" maxlength="60" required error-message="Pflichtfeld"></paper-input>
+        <paper-input name="comment" type="text" label="Kommentar" value="{{article.comment}}" maxlength="240"></paper-input>
+        <input type="hidden" name="category" value="{{article.category.id}}">
+      </form>
+      <iron-ajax id="articleCategoriesAjax" auto handle-as="json"
+                 url="{{apiUrl}}articlecats"
+                 last-response="{{articleCategories}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Kategorie">
+        <paper-menu class="dropdown-content" selected="{{article.category.id}}" name="type" attr-for-selected="value">
+          <template is="dom-repeat" items="{{articleCategories}}">
+            <paper-item value="{{item.id}}">{{item.description}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <change-data edited-by="{{article.editedBy}}" edited-date="{{article.editedDate}}" created-by="{{article.createdBy}}" created-date="{{article.createdDate}}"></change-data>
+      <paper-button id="articleEditFormSubmitButton" class="bottom-button" raised>Änderungen übernehmen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-articles-edit',
+        properties: {
+          articleNumber: {
+            type: String,
+            notify: true
+          },
+          article: {
+            type: Object,
+            notify: true
+          },
+          oldArticleNumber: {
+            type: String,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          articleCategories: {
+            type: Array,
+            notify: true
+          }
+        },
+        ready: function() {
+          this.oldArticleNumber = this.articleNumber;
+          app.applyGenericFormListeners(this.$.articleEditForm, this.$.articleEditFormSubmitButton,
+            function(event) {
+              return event.detail.status === 200;
+            }, 'Artikel gespeichert', 'Artikeländerung fehlgeschlagen', function() {
+              page('/articles');
+            }, null, null);
+        }
+      });
+    })();
+  </script>
+</dom-module>
