@@ -1,0 +1,78 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-articles-new">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-dropdown-menu {
+        width: 200px;
+      }
+    </style>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>Neuen Artikel erstellen</h1>
+      <form is="ajax-form" id="articleNewForm" action="{{apiUrl}}articles" method="post"
+            enctype="application/json">
+        <paper-input name="articleNumber" type="text" label="Artikelnummer" value="" maxlength="40" required error-message="Pflichtfeld"></paper-input>
+        <paper-input name="description" rows="2" type="text" label="Beschreibung" value="" maxlength="120"></paper-input>
+        <paper-input name="name" type="text" label="Name" value="" maxlength="60" required error-message="Pflichtfeld"></paper-input>
+        <paper-input name="comment" type="text" label="Kommentar" value="" maxlength="240"></paper-input>
+        <input type="hidden" name="category" value="{{articleCategory}}">
+      </form>
+      <iron-ajax id="articleCategoriesAjax" auto handle-as="json"
+                 url="{{apiUrl}}articlecats"
+                 last-response="{{articleCategories}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Kategorie">
+        <paper-menu class="dropdown-content" selected="{{articleCategory}}" name="type" attr-for-selected="value">
+          <template is="dom-repeat" items="{{articleCategories}}">
+            <paper-item value="{{item.id}}">{{item.description}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <div></div>
+      <paper-button id="articleNewFormSubmitButton" class="bottom-button" raised>Artikel erstellen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-articles-new',
+        properties: {
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          articleCategories: {
+            type: Array,
+            notify: true
+          },
+          articleCategory: {
+            type: String,
+            notify: true
+          }
+        },
+        ready: function() {
+          app.applyGenericFormListeners(this.$.articleNewForm, this.$.articleNewFormSubmitButton,
+            function(event) {
+              return event.detail.status === 201;
+            }, 'Artikel erstellt', 'Artikelerstellung fehlgeschlagen', function() {
+              page('/articles');
+            }, null, null);
+        }
+      });
+    })();
+  </script>
+</dom-module>

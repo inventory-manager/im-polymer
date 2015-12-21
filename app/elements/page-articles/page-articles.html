@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-articles">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="articleListAjax" auto handle-as="json"
+               url="{{apiUrl}}articles"
+               loading="{{loading}}"
+               last-response="{{articles}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>Artikel</h1>
+      <div class="im-table">
+        <div class="tr">
+          <div class="th">Artikelnummer</div>
+          <div class="th">Name</div>
+          <div class="th">Kategorie</div>
+          <div class="th">Aktionen</div>
+        </div>
+        <template is="dom-repeat" items="{{articles}}">
+          <div class="tr">
+            <div class="td">{{item.articleNumber}}</div>
+            <div class="td">{{item.name}}</div>
+            <div class="td">{{item.category.description}}</div>
+            <div class="td">
+              <a href="/articles/{{item.articleNumber}}" class="inherit">
+                <paper-icon-button icon="create"></paper-icon-button>
+              </a>
+            </div>
+          </div>
+        </template>
+      </div>
+      <paper-button id="newButton" class="bottom-button" raised onclick="page('/articles/new');">Neuen Artikel anlegen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-articles',
+        properties: {
+          articles: {
+            type: Array,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          }
+        },
+        ready: function() {
+        }
+      });
+    })();
+  </script>
+</dom-module>
