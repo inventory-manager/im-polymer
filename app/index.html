@@ -93,6 +93,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-icon icon="info"></iron-icon>
             <span>Artikel</span>
           </a>
+
+          <a data-route="devices" href="devices">
+            <iron-icon icon="info"></iron-icon>
+            <span>Geräte</span>
+          </a>
         </paper-menu>
       </paper-scroll-header-panel>
 
@@ -182,6 +187,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" data-route="articles-new" restamp>
               <section>
                 <page-articles-new api-url="{{apiUrl}}"></page-articles-new>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="devices" restamp>
+              <section>
+                <page-devices loading="{{loading}}" api-url="{{apiUrl}}"></page-devices>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="devices-edit" restamp>
+              <section>
+                <page-devices-edit device-id="{{params.id}}" loading="{{loading}}" api-url="{{apiUrl}}"></page-devices-edit>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="devices-new" restamp>
+              <section>
+                <page-devices-new api-url="{{apiUrl}}"></page-devices-new>
               </section>
             </template>
 

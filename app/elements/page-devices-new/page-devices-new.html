@@ -1,0 +1,126 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-devices-new">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-dropdown-menu {
+        width: 200px;
+      }
+    </style>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>Neues Gerät erstellen</h1>
+      <form is="ajax-form" id="deviceNewForm" action="{{apiUrl}}devices" method="post"
+            enctype="application/json">
+        <paper-input name="serialNumber" label="Seriennummer" value="" maxlength="40"></paper-input>
+        <paper-input name="inventoryNumber" label="Inventarnummer" value="" maxlength="40"></paper-input>
+        <paper-input name="buyDate" label="Kaufdatum" value=""></paper-input>
+        <paper-input name="dueDate" label="Abschreibungsdatum" value=""></paper-input>
+        <paper-input name="comment" label="Kommentar" value="" maxlength="240"></paper-input>
+
+        <input type="hidden" name="inUse" value="{{inUse}}">
+        <input type="hidden" name="state" value="{{deviceState}}">
+        <input type="hidden" name="article" value="{{articleNumber}}">
+        <input type="hidden" name="room" value="{{roomNumber}}">
+      </form>
+      <paper-dropdown-menu label="Verwendungsstatus">
+        <paper-menu class="dropdown-content" selected="{{inUse}}" name="inUse" attr-for-selected="value">
+          <paper-item value="0">In Benutzung</paper-item>
+          <paper-item value="1">Nicht in Benutzung</paper-item>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="deviceStatesAjax" auto handle-as="json"
+                 url="{{apiUrl}}devicestates"
+                 last-response="{{deviceStates}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Status" required>
+        <paper-menu class="dropdown-content" selected="{{deviceState}}" name="state" attr-for-selected="value">
+          <template is="dom-repeat" items="{{deviceStates}}">
+            <paper-item value="{{item.id}}">{{item.description}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="articlesAjax" auto handle-as="json"
+                 url="{{apiUrl}}articles"
+                 last-response="{{articles}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Artikel" required>
+        <paper-menu class="dropdown-content" selected="{{articleNumber}}" name="article" attr-for-selected="value">
+          <template is="dom-repeat" items="{{articles}}">
+            <paper-item value="{{item.articleNumber}}">{{item.name}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="roomsAjax" auto handle-as="json"
+                 url="{{apiUrl}}rooms"
+                 last-response="{{rooms}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Raum" required>
+        <paper-menu class="dropdown-content" selected="{{roomNumber}}" name="room" attr-for-selected="value">
+          <template is="dom-repeat" items="{{rooms}}">
+            <paper-item value="{{item.roomNumber}}">{{item.roomNumber}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <paper-button id="deviceNewFormSubmitButton" class="bottom-button" raised>Änderungen übernehmen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-devices-new',
+        properties: {
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          articles: {
+            type: Array,
+            notify: true
+          },
+          rooms: {
+            type: Array,
+            notify: true
+          },
+          deviceStates: {
+            type: Array,
+            notify: true
+          },
+          articleNumber: {
+            type: String,
+            notify: true
+          },
+          deviceState: {
+            type: String,
+            notify: true
+          },
+          roomNumber: {
+            type: String,
+            notify: true
+          }
+        },
+        ready: function() {
+          app.applyGenericFormListeners(this.$.deviceNewForm, this.$.deviceNewFormSubmitButton,
+            function(event) {
+              return event.detail.status === 201;
+            }, 'Gerät erstellt', 'Geräteerstellung fehlgeschlagen', function() {
+              page('/devices');
+            }, null, null);
+        }
+      });
+    })();
+  </script>
+</dom-module>
