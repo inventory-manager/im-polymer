@@ -80,18 +80,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </a>
 
           <a data-route="users" href="users">
-            <iron-icon icon="info"></iron-icon>
+            <iron-icon icon="account-circle"></iron-icon>
             <span>Benutzer</span>
           </a>
 
           <a data-route="rooms" href="rooms">
-            <iron-icon icon="info"></iron-icon>
+            <iron-icon icon="room"></iron-icon>
             <span>Räume</span>
           </a>
 
           <a data-route="articles" href="articles">
-            <iron-icon icon="info"></iron-icon>
+            <iron-icon icon="shopping-cart"></iron-icon>
             <span>Artikel</span>
+          </a>
+
+          <a data-route="devices" href="devices">
+            <iron-icon icon="device:devices"></iron-icon>
+            <span>Geräte</span>
           </a>
         </paper-menu>
       </paper-scroll-header-panel>
@@ -182,6 +187,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" data-route="articles-new" restamp>
               <section>
                 <page-articles-new api-url="{{apiUrl}}"></page-articles-new>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="devices" restamp>
+              <section>
+                <page-devices loading="{{loading}}" api-url="{{apiUrl}}"></page-devices>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="devices-edit" restamp>
+              <section>
+                <page-devices-edit device-id="{{params.id}}" loading="{{loading}}" api-url="{{apiUrl}}"></page-devices-edit>
+              </section>
+            </template>
+
+            <template is="dom-if" data-route="devices-new" restamp>
+              <section>
+                <page-devices-new api-url="{{apiUrl}}"></page-devices-new>
               </section>
             </template>
 

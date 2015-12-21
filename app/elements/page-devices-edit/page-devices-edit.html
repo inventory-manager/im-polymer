@@ -1,0 +1,128 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-devices-edit">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+      paper-dropdown-menu {
+        width: 200px;
+      }
+    </style>
+    <iron-ajax id="deviceDetailAjax" auto handle-as="json"
+               url="{{apiUrl}}devices/{{deviceId}}"
+               last-response="{{device}}"
+               loading="{{loading}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>{{device.article.name}} ({{device.serialNumber}} / {{device.inventoryNumber}}) bearbeiten</h1>
+      <form is="ajax-form" id="deviceEditForm" action="{{apiUrl}}devices" method="put"
+            enctype="application/json">
+        <input type="hidden" name="id" value="{{device.id}}">
+        <paper-input name="serialNumber" label="Seriennummer" value="{{device.serialNumber}}" maxlength="40"></paper-input>
+        <paper-input name="inventoryNumber" label="Inventarnummer" value="{{device.inventoryNumber}}" maxlength="40"></paper-input>
+        <paper-input name="buyDate" label="Kaufdatum" value="{{device.buyDate}}"></paper-input>
+        <paper-input name="dueDate" label="Abschreibungsdatum" value="{{device.dueDate}}"></paper-input>
+        <paper-input name="comment" label="Kommentar" value="{{device.comment}}" maxlength="240"></paper-input>
+
+        <input type="hidden" name="inUse" value="{{device.inUse}}">
+        <input type="hidden" name="state" value="{{device.deviceState.id}}">
+        <input type="hidden" name="article" value="{{device.article.articleNumber}}">
+        <input type="hidden" name="room" value="{{device.room.roomNumber}}">
+      </form>
+      <paper-dropdown-menu label="Verwendungsstatus">
+        <paper-menu class="dropdown-content" selected="{{device.inUse}}" name="inUse" attr-for-selected="value">
+          <paper-item value="0">In Benutzung</paper-item>
+          <paper-item value="1">Nicht in Benutzung</paper-item>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="deviceStatesAjax" auto handle-as="json"
+                 url="{{apiUrl}}devicestates"
+                 last-response="{{deviceStates}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Status" required>
+        <paper-menu class="dropdown-content" selected="{{device.deviceState.id}}" name="state" attr-for-selected="value">
+          <template is="dom-repeat" items="{{deviceStates}}">
+            <paper-item value="{{item.id}}">{{item.description}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="articlesAjax" auto handle-as="json"
+                 url="{{apiUrl}}articles"
+                 last-response="{{articles}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Artikel" required>
+        <paper-menu class="dropdown-content" selected="{{device.article.articleNumber}}" name="article" attr-for-selected="value">
+          <template is="dom-repeat" items="{{articles}}">
+            <paper-item value="{{item.articleNumber}}">{{item.name}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <iron-ajax id="roomsAjax" auto handle-as="json"
+                 url="{{apiUrl}}rooms"
+                 last-response="{{rooms}}"
+                 loading="{{loading}}"></iron-ajax>
+      <paper-dropdown-menu label="Raum" required>
+        <paper-menu class="dropdown-content" selected="{{device.room.roomNumber}}" name="room" attr-for-selected="value">
+          <template is="dom-repeat" items="{{rooms}}">
+            <paper-item value="{{item.roomNumber}}">{{item.roomNumber}}</paper-item>
+          </template>
+        </paper-menu>
+      </paper-dropdown-menu>
+      <change-data edited-by="{{device.editedBy}}" edited-date="{{device.editedDate}}" created-by="{{device.createdBy}}" created-date="{{device.createdDate}}"></change-data>
+      <paper-button id="deviceEditFormSubmitButton" class="bottom-button" raised>Änderungen übernehmen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-devices-edit',
+        properties: {
+          deviceId: {
+            type: String,
+            notify: true
+          },
+          device: {
+            type: Object,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          },
+          articles: {
+            type: Array,
+            notify: true
+          },
+          rooms: {
+            type: Array,
+            notify: true
+          },
+          deviceStates: {
+            type: Array,
+            notify: true
+          }
+        },
+        ready: function() {
+          app.applyGenericFormListeners(this.$.deviceEditForm, this.$.deviceEditFormSubmitButton,
+            function(event) {
+              return event.detail.status === 200;
+            }, 'Gerät gespeichert', 'Geräteänderung fehlgeschlagen', function() {
+              page('/devices');
+            }, null, null);
+        }
+      });
+    })();
+  </script>
+</dom-module>

@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="page-devices">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <iron-ajax id="deviceListAjax" auto handle-as="json"
+               url="{{apiUrl}}devices"
+               loading="{{loading}}"
+               last-response="{{devices}}"></iron-ajax>
+    <paper-material elevation="1">
+      <loading-spinner running="{{loading}}"></loading-spinner>
+      <h1>Geräte</h1>
+      <div class="im-table">
+        <div class="tr">
+          <div class="th">Ids</div>
+          <div class="th">Artikel</div>
+          <div class="th">Raum</div>
+          <div class="th">Aktionen</div>
+        </div>
+        <template is="dom-repeat" items="{{devices}}">
+          <div class="tr">
+            <div class="td">{{item.serialNumber}}<br>{{item.inventoryNumber}}</div>
+            <div class="td">{{item.article.name}}</div>
+            <div class="td">{{item.room.roomNumber}}</div>
+            <div class="td">
+              <a href="/devices/{{item.id}}" class="inherit">
+                <paper-icon-button icon="create"></paper-icon-button>
+              </a>
+            </div>
+          </div>
+        </template>
+      </div>
+      <paper-button id="newButton" class="bottom-button" raised onclick="page('/devices/new');">Neues Gerät anlegen</paper-button>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'page-devices',
+        properties: {
+          devices: {
+            type: Array,
+            notify: true
+          },
+          loading: {
+            type: Boolean,
+            readOnly: false,
+            notify: true,
+            value: true
+          },
+          apiUrl: {
+            type: String,
+            notify: true
+          }
+        },
+        ready: function() {
+        }
+      });
+    })();
+  </script>
+</dom-module>
