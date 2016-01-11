@@ -65,6 +65,7 @@
         _onRunningChange: function() {
           if (!this.running && this.readyForStart) {
             this.readyForStart = false;
+          } else if (!this.running && !this.readyForStart) {
             this.async(function() {
               this.playAnimation('exit');
             }, 300);
