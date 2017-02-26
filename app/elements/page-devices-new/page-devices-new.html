@@ -10,6 +10,13 @@
       paper-dropdown-menu {
         width: 200px;
       }
+      .datebox{
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+      }
+      .datebox paper-input {
+        @apply(--layout-flex);
+      }
     </style>
     <paper-material elevation="1">
       <loading-spinner running="{{loading}}"></loading-spinner>
@@ -18,8 +25,16 @@
             enctype="application/json">
         <paper-input name="serialNumber" label="Seriennummer" value="" maxlength="40"></paper-input>
         <paper-input name="inventoryNumber" label="Inventarnummer" value="" maxlength="40"></paper-input>
-        <paper-input name="buyDate" label="Kaufdatum" value=""></paper-input>
-        <paper-input name="dueDate" label="Abschreibungsdatum" value=""></paper-input>
+        <div class="datebox">
+          <paper-icon-button on-click="buydatedialog" icon="today"></paper-icon-button>
+          <paper-input name="buyDate" disabled label="Kaufdatum" value="{{buyDate}}"></paper-input>
+        </div>
+        <jv-datepicker-dialog id="buydatepicker" modal date-format="dd.mm.yyyy" on-format-date="updatebuydate"></jv-datepicker-dialog>
+        <div class="datebox">
+          <paper-icon-button on-click="duedatedialog" icon="today">Abschreibungsdatum ändern</paper-icon-button>
+          <paper-input name="dueDate" disabled label="Abschreibungsdatum" value="{{dueDate}}"></paper-input>
+        </div>
+        <jv-datepicker-dialog id="duedatepicker" modal date-format="dd.mm.yyyy" on-format-date="updateduedate"></jv-datepicker-dialog>
         <paper-input name="comment" label="Kommentar" value="" maxlength="240"></paper-input>
 
         <input type="hidden" name="inUse" value="{{inUse}}">
@@ -119,6 +134,18 @@
             }, 'Gerät erstellt', 'Geräteerstellung fehlgeschlagen', function() {
               page('/devices');
             }, null, null);
+        },
+        buydatedialog: function() {
+          this.$.buydatepicker.open();
+        },
+        duedatedialog: function() {
+          this.$.duedatepicker.open();
+        },
+        updatebuydate: function() {
+          this.set('buyDate', this.$.buydatepicker.bindDate + '-00:00:00');
+        },
+        updateduedate: function() {
+          this.set('dueDate', this.$.duedatepicker.bindDate + '-00:00:00');
         }
       });
     })();
